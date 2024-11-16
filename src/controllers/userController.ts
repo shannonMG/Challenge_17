@@ -143,3 +143,84 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
+export const addFriend = async (req: Request, res: Response) => {
+  try {
+    const { userId, friendId } = req.body;
+
+    // Step 1: Validate ObjectIds
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(friendId)) {
+      return res.status(400).json({ message: 'Invalid user ID(s).' });
+    }
+
+    // Step 2: Prevent users from adding themselves as friends
+    if (userId === friendId) {
+      return res.status(400).json({ message: 'User cannot add themselves as a friend.' });
+    }
+
+    // Convert IDs to ObjectId
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const friendObjectId = new mongoose.Types.ObjectId(friendId);
+
+    // Step 3: Check if both users exist
+    const user = await User.findById(userObjectId);
+    const friend = await User.findById(friendObjectId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    if (!friend) {
+      return res.status(404).json({ message: 'Friend not found.' });
+    }
+
+    // Step 4: Check if the friend is already in the user's friends list
+    if (!user.friends.some(friend => friend.equals(friendObjectId))) {
+      user.friends.push(friendObjectId);
+      await user.save();
+    }
+
+    // Step 5: Add userId to friend's friends list for bidirectional friendship
+    if (!friend.friends.some(f => f.equals(userObjectId))) {
+      friend.friends.push(userObjectId);
+      await friend.save();
+    }
+
+    res.status(200).json({
+      message: 'Friendship added successfully.',
+      user,
+      friend
+    });
+  } catch (error) {
+    console.error('Error adding friend:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+export const deleteFriend = async (req: Request, res: Response) => {
+  try {
+    console.log('Received body:', req.body); // Log the incoming request body
+
+    const { userId, friendId } = req.body;
+
+    console.log('Parsed userId:', userId);
+    console.log('Parsed friendId:', friendId);
+
+    if (!userId || !friendId) {
+      return res.status(400).json({ message: 'Missing userId or friendId.' });
+    }
+
+    // Validate ObjectIds
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(friendId)) {
+      console.error('Invalid ObjectId(s)');
+      return res.status(400).json({ message: 'Invalid user ID(s).' });
+    }
+
+    // Rest of your code remains the same
+    res.status(200).json({ message: 'IDs are valid.' });
+
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
