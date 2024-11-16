@@ -1,6 +1,6 @@
 // routes/userRoutes.ts
 import express from 'express';
-import { createUser } from '../controllers/userController';
+import { createUser } from '../../controllers/userController';
 
 const router = express.Router();
 
