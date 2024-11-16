@@ -1,26 +1,18 @@
 import express from 'express';
-import mongoose from 'mongoose';
-import jsonParser from './middleware/jsonParser.js';
+import db from './config/connection';
+import routes from './routes/index'
 
-const app = express();
+
+await db();
+
 const PORT = process.env.PORT || 3001;
+const app = express();
 
-app.use(jsonParser);
+app.use(express.urlencoded({ extended: true}));
+app.use(express.json());
 
-// Function to connect to MongoDB
-async function connectDB() {
-  try {
-    await mongoose.connect('mongodb://localhost/myapp',);
-    console.log('Connected Successfully to MongoDB');
+app.use(routes);
 
-    // Start the server after successful database connection
-    app.listen(PORT, () => {
-      console.log(`API server running on port ${PORT}!`);
-    });
-  } catch (err) {
-    console.error('Database connection error:', err);
-  }
-}
-
-// Call the async function to connect to the database and start the server
-connectDB();
+app.listen(PORT, () => {
+  console.log(`API server running on port ${PORT}!`);
+});
