@@ -1,18 +1,16 @@
 import express from 'express';
-import db from './config/connection';
-import routes from './routes/index'
+import connectDB from './config/connection';
+import userRoutes from './routes/userRoutes';
 
-
-await db();
-
-const PORT = process.env.PORT || 3001;
 const app = express();
-
-app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 
-app.use(routes);
+// Connect to the database
+connectDB();
 
+app.use('/api/users', userRoutes);
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`API server running on port ${PORT}!`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
