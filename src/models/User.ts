@@ -31,7 +31,7 @@ export interface IUser extends Document {
       friends: [
         {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'User', // Self-reference
+          ref: 'User', 
         },
       ],
     },
