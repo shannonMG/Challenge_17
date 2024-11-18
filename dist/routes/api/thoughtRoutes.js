@@ -1,12 +1,8 @@
 // routes/userRoutes.ts
 import express from 'express';
-import { createUser } from '../controllers/userController';
-
+import { createThought } from '../../controllers/thoughtController';
 const router = express.Router();
-
 // POST /api/users - Create a new user
-router.post('/', createUser);
-
+router.post('/', createThought);
 // ... other routes
-
 export default router;
