@@ -35,7 +35,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const users = await User.find()
       .populate('thoughts')
       .populate('friends')
-      .select('-__v'); // Exclude the __v field if desired
+    
 
     res.json(users);
   } catch (error) {
@@ -146,13 +146,14 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 export const addFriend = async (req: Request, res: Response) => {
   console.log('Adding a friend...');
-  console.log('Request Body:', req.body);
+  console.log('User ID:', req.params.userId);
+  console.log('Friend ID:', req.params.id);
 
   try {
     // Use findOneAndUpdate to add a friend to the user's friends list
     const user = await User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $addToSet: { friends: req.body.friendId } }, // Add friendId to friends array
+      { $addToSet: { friends: req.params.id } }, // Add friend ID from params to friends array
       { runValidators: true, new: true }
     );
 
@@ -169,10 +170,9 @@ export const addFriend = async (req: Request, res: Response) => {
 
 export const removeFriend = async (req: Request, res: Response) => {
   try {
-    // Use findOneAndUpdate to remove the friend from the user's friends list
     const user = await User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $pull: { friends: req.params.friendId } }, // Remove friendId from friends array
+      { $pull: { friends: req.params.id } }, // Remove the friend using $pull
       { runValidators: true, new: true }
     );
 
