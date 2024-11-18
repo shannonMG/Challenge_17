@@ -4,17 +4,13 @@ import { createThought, getAllThoughts, getThoughtById, updateThought, deleteTho
 
 const router = express.Router();
 
-// POST /api/users - Create a new user
+
 router.post('/', createThought);
 router.get('/', getAllThoughts);
 router.get('/:id', getThoughtById);
 router.put('/:id', updateThought);
 router.delete('/:id', deleteThought)
 router.route('/:id/reactions').post(addReaction)
-router.route('/:thoughtId/reactions/:reactionId').delete(removeReaction);
-
-
-
-// ... other routes
+router.route('/:id/reactions/:reactionId').delete(removeReaction);
 
 export default router;
