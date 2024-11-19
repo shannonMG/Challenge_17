@@ -147,7 +147,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const addFriend = async (req: Request, res: Response) => {
   console.log('Adding a friend...');
   console.log('User ID:', req.params.userId);
-  console.log('Friend ID:', req.params.id);
+  console.log('Friend ID:', req.params.friendId);
 
   try {
     // Use findOneAndUpdate to add a friend to the user's friends list
